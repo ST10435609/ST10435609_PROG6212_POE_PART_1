@@ -19,13 +19,12 @@ jobs:
       - name: Check required folders
         run: |
           test -d docs
-          
 
       - name: Check required files
         run: |
           test -f docs/PROG_ERD.png
-          test -f docs/API-Endpoints.md
-          test -f docs/schema.sql
+          test -f docs/API_Endpoint_Plan.pdf
+          test -f docs/SQLDatabaseScript.sql
 
       - name: Validation successful
         run: echo "Repository structure is valid."
