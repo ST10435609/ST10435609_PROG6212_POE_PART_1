@@ -36,19 +36,22 @@ A GitHub Actions workflow (`.github/workflows/validate-docs.yml`) validates that
 
 ## Video Walkthrough
 
-[Watch on YouTube](https://youtu.be/UPBPrb7GkD4?si=K81lCnPClMoUg_Hb)
+YouTube Link:  https://youtu.be/UPBPrb7GkD4
 
 The video covers the planning documents, the reasoning behind the ERD design decisions, the endpoint plan choices, and a live run of the SQL script in SSMS.
 
 ## AI Tool Disclosure
+i used the ai to help configure the github actions then i updated with my file names and how i wanted my files to be structured.
+i also used it to help me figure out why my sql scripts were giving me errors on some point and asked it to help me understand the meaning of some errors in ssms
 
-I used AI to help configure the GitHub Actions workflow, then updated it with my file names and desired file structure. I also used it to help debug SQL script errors and understand error messages in SSMS.
+## Reference List 
 
-Part 1 walkthrough video:
-
-The video covers: the planning documents, the reasoning behind the ERD design decisions, the endpoint plan choices, and a live run of the SQL script in SSMS.
+Coronel, c., Morris, S., Crokett, k. and Blewett, c. (2020) Database Principles: 
+Fundamentals of Design, Implementation, and Management. 3rd edn. Andover: Cengage 
+Learning.
 
 Troelsen, A. and Japikse, P. (2022) _Pro C 10 with .NET 6: Foundational Principles and Practices in Programming_. 11th edn. Apress.
 
-i used the ai to help configure the github actions then i updated with my file names and how i wanted my files to be structured.
-i also used it to help me figure out why my sql scripts were giving me errors on some point and asked it to help me understand the meaning of some errors in ssms
+
+SQL Server Crash course | Microsoft SQL Server Tutorial 2021. TutorialBrain [video online] Available at: <https://www.youtube.com/watch?v=lo80Q8C0nXk> [Accessed 03 September 
+2026].
