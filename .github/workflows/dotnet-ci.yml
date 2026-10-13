@@ -1,0 +1,30 @@
+name: RaceDay API CI
+
+on:
+  push:
+    branches: ["part2-api", "main"]
+  pull_request:
+    branches: ["part2-api", "main"]
+
+jobs:
+  build-and-test:
+    name: Build and run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore RaceDay/RaceDay.slnx
+
+      - name: Build
+        run: dotnet build RaceDay/RaceDay.slnx --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test RaceDay/RaceDay.slnx --no-build --configuration Release --verbosity normal
