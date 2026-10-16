@@ -128,7 +128,15 @@ namespace RaceDay.Api.Controllers
             }
 
             _db.Categories.Remove(category);
-            await _db.SaveChangesAsync();
+
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict("Cannot delete this category because participants are still enrolled under it.");
+            }
 
             return NoContent();
         }

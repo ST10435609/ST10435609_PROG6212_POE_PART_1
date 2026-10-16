@@ -173,13 +173,12 @@ namespace RaceDay.Api.Controllers
             return Ok(response);
         }
 
-        // DELETE /api/events/{id}
+        // DELETE /api/events/{id} — Organiser, owner only
         [HttpDelete("{id}")]
         [SessionAuthorize("Organiser")]
         public async Task<IActionResult> Delete(int id)
         {
-            var ev = await _db.Events
-                .FirstOrDefaultAsync(e => e.EventId == id);
+            var ev = await _db.Events.FirstOrDefaultAsync(e => e.EventId == id);
 
             if (ev == null)
             {
@@ -193,7 +192,16 @@ namespace RaceDay.Api.Controllers
 
             _db.Events.Remove(ev);
 
-            await _db.SaveChangesAsync();
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                // Restrict foreign keys block this delete while categories or
+                // enrolments still reference the event
+                return Conflict("Cannot delete this event because it still has categories or enrolments linked to it.");
+            }
 
             return NoContent();
         }
