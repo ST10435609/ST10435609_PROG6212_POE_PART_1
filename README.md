@@ -55,3 +55,31 @@ Troelsen, A. and Japikse, P. (2022) _Pro C 10 with .NET 6: Foundational Principl
 
 SQL Server Crash course | Microsoft SQL Server Tutorial 2021. TutorialBrain [video online] Available at: <https://www.youtube.com/watch?v=lo80Q8C0nXk> [Accessed 03 September 
 2026].
+
+
+
+# Part 2 — RESTful API
+## Setup and run instructions
+1. Clone the repo and check out the `part2-api` branch (or `main` once merged).
+2. Ensure SQL Server LocalDB is installed (`(localdb)\MSSQLLocalDB`).
+3. Open `RaceDay/RaceDay.slnx` in Visual Studio 2022.
+4. In Package Manager Console (Default project: RaceDay.Api), run `Update-Database` to create `RaceDayApiDB`.
+5. Run the `RaceDay.Api` project. The browser opens to `/swagger`, where every endpoint can be tested directly.
+
+## Roles
+- **Organiser** — manages their own events, categories, and captures results for participants enrolled in their events.
+- **Participant** — browses events, enrols under a chosen category, and views their own enrolments and results.
+
+## CI/CD
+<img width="1912" height="1075" alt="part2 api cl" src="https://github.com/user-attachments/assets/890589f5-8ba1-4ee7-aa25-8f0e036e8592" />
+
+<img width="1919" height="1079" alt="part2 api cl 2" src="https://github.com/user-attachments/assets/586a4df4-557b-4223-9655-4851994b63cb" />
+
+<img width="1919" height="1079" alt="ci-success-screenshot-part2 png" src="https://github.com/user-attachments/assets/e713aacc-9658-4c47-a84b-ab676f03ab76" />
+
+
+
+## Youtube Video
+
+https://youtu.be/JLM6mptLvQI 
+
