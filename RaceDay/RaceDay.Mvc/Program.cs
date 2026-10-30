@@ -16,9 +16,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-// UseCookies = false: we manage the API's session cookie manually,
-// since the API's cookie belongs to this server-to-server call,
-// not automatically to the browser visiting the MVC app
+// UseCookies = false: manage the API's session cookie manually,
 builder.Services.AddHttpClient("RaceDayApi", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
@@ -37,7 +35,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+   
     app.UseHsts();
 }
 
