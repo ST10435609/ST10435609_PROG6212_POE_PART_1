@@ -1,0 +1,21 @@
+﻿@model List<RaceDay.Mvc.Models.CategoryViewModel>
+
+<h2>Categories</h2>
+
+<a asp-action="Create" asp-route-eventId="@ViewBag.EventId" class="btn btn-primary mb-3">Add Category</a>
+
+<table class="table">
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.CategoryName</td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@c.CategoryId" asp-route-eventId="@ViewBag.EventId" method="post" class="d-inline" onsubmit="return confirm('Delete this category?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

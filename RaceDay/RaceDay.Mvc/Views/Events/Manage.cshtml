@@ -1,0 +1,37 @@
+﻿@model List<RaceDay.Mvc.Models.EventListItemViewModel>
+
+<h2>My Events</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<a asp-action="Create" class="btn btn-primary mb-3">Create New Event</a>
+
+<table class="table">
+    <thead><tr><th>Name</th><th>Date</th><th>Type</th><th>Location</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var ev in Model)
+        {
+            <tr>
+                <td>@ev.Name</td>
+                <td>@ev.EventDate.ToString("dd MMM yyyy")</td>
+                <td>@ev.EventType</td>
+                <td>@ev.Location</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@ev.EventId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-controller="Categories" asp-action="Manage" asp-route-eventId="@ev.EventId" class="btn btn-sm btn-outline-secondary">Categories</a>
+                    <a asp-action="Enrolments" asp-route-id="@ev.EventId" class="btn btn-sm btn-outline-secondary">Enrolments</a>
+                    <form asp-action="Delete" asp-route-id="@ev.EventId" method="post" class="d-inline" onsubmit="return confirm('Delete this event?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
