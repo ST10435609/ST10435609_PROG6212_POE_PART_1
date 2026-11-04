@@ -1,5 +1,6 @@
 ﻿// start of BlobStorageService
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 
 namespace RaceDay.Api.Services
 {
@@ -17,12 +18,18 @@ namespace RaceDay.Api.Services
         {
             var container_client = _blob_service_client.GetBlobContainerClient(container_name);
 
-            // GUID-based name so two uploads never collide or silently overwrite each other
             var blob_name = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
             var blob_client = container_client.GetBlobClient(blob_name);
 
             using var stream = file.OpenReadStream();
-            await blob_client.UploadAsync(stream, overwrite: true);
+
+
+            var upload_options = new BlobUploadOptions
+            {
+                HttpHeaders = new BlobHttpHeaders { ContentType = file.ContentType }
+            };
+
+            await blob_client.UploadAsync(stream, upload_options);
 
             return blob_client.Uri.ToString();
         }
