@@ -1,0 +1,19 @@
+﻿@model List<RaceDay.Mvc.Models.ParticipantEnrolmentViewModel>
+
+<h2>My Enrolments</h2>
+
+<table class="table">
+    <thead><tr><th>Event</th><th>Category</th><th>Status</th></tr></thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td><a asp-controller="Home" asp-action="Details" asp-route-id="@e.EventId">@e.EventName</a></td>
+                <td>@e.CategoryName</td>
+                <td>
+                    <span class="badge @(e.EnrolmentStatus == "Confirmed" ? "bg-success" : "bg-warning")">@e.EnrolmentStatus</span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

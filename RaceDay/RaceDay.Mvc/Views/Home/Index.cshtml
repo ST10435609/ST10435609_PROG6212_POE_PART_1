@@ -1,8 +1,28 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<RaceDay.Mvc.Models.EventListItemViewModel>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h2>Upcoming Events</h2>
+
+<div class="btn-group mb-3">
+    <a asp-action="Index" class="btn btn-outline-secondary @(ViewBag.SelectedType == null ? "active" : "")">All</a>
+    <a asp-action="Index" asp-route-eventType="Run" class="btn btn-outline-secondary @(ViewBag.SelectedType == "Run" ? "active" : "")">Run</a>
+    <a asp-action="Index" asp-route-eventType="Walk" class="btn btn-outline-secondary @(ViewBag.SelectedType == "Walk" ? "active" : "")">Walk</a>
+    <a asp-action="Index" asp-route-eventType="Cycle" class="btn btn-outline-secondary @(ViewBag.SelectedType == "Cycle" ? "active" : "")">Cycle</a>
+</div>
+
+<div class="row">
+    @foreach (var ev in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@ev.Name</h5>
+                    <p class="card-text">
+                        @ev.EventDate.ToString("dd MMM yyyy") — @ev.Location<br />
+                        @ev.EventType, @ev.Distance km
+                    </p>
+                    <a asp-action="Details" asp-route-id="@ev.EventId" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    }
 </div>
