@@ -13,10 +13,14 @@ namespace RaceDay.Api.Controllers
     public class EventsController : ApiControllerBase
     {
         private readonly RaceDayDbContext _db;
+        private readonly RaceDay.Api.Services.BlobStorageService _blob_storage_service;
 
-        public EventsController(RaceDayDbContext db)
+        public EventsController(
+            RaceDayDbContext db,
+            RaceDay.Api.Services.BlobStorageService blob_storage_service)
         {
             _db = db;
+            _blob_storage_service = blob_storage_service;
         }
 
         // GET /api/events
@@ -70,6 +74,46 @@ namespace RaceDay.Api.Controllers
 
             return Ok(response);
         }
+
+        // POST /api/events/{id}/banner — Organiser, owner only
+        [HttpPost("{id}/banner")]
+        [SessionAuthorize("Organiser")]
+        public async Task<IActionResult> UploadBanner(int id, IFormFile file)
+        {
+            var ev = await _db.Events.FirstOrDefaultAsync(e => e.EventId == id);
+            if (ev == null)
+            {
+                return NotFound("Event not found.");
+            }
+
+            if (!IsOwnerOf(ev))
+            {
+                return StatusCode(403);
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            if (file.Length > 5 * 1024 * 1024)
+            {
+                return BadRequest("File too large. Maximum size is 5MB.");
+            }
+
+            var allowed_types = new[] { "image/jpeg", "image/png", "image/webp" };
+            if (!allowed_types.Contains(file.ContentType))
+            {
+                return BadRequest("Only JPEG, PNG or WEBP images are allowed.");
+            }
+
+            var url = await _blob_storage_service.UploadAsync("event-banners", file);
+            ev.BannerImageUrl = url;
+            await _db.SaveChangesAsync();
+
+            return Ok(new { bannerImageUrl = url });
+        }
+
 
         // POST /api/events
         [HttpPost]
