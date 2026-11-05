@@ -33,8 +33,10 @@ namespace RaceDay.Mvc.Controllers
             return View("Form", new EventFormViewModel());
         }
 
+
+        //here
         [HttpPost]
-        public async Task<IActionResult> Create(EventFormViewModel model)
+        public async Task<IActionResult> Create(EventFormViewModel model, IFormFile? bannerFile)
         {
             if (!ModelState.IsValid)
             {
@@ -48,8 +50,7 @@ namespace RaceDay.Mvc.Controllers
                 model.EventDate,
                 model.Location,
                 model.Distance,
-                model.EventType,
-                model.BannerImageUrl
+                model.EventType
             };
 
             var response = await _api_client.SendAsync(HttpMethod.Post, "api/events", body);
@@ -58,6 +59,13 @@ namespace RaceDay.Mvc.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Could not create the event. Check the event type is Run, Walk or Cycle.");
                 return View("Form", model);
+            }
+
+            var created = await response.Content.ReadFromJsonAsync<EventFormViewModel>();
+
+            if (bannerFile != null && bannerFile.Length > 0)
+            {
+                await _api_client.SendFileAsync(HttpMethod.Post, $"api/events/{created!.EventId}/banner", bannerFile);
             }
 
             TempData["SuccessMessage"] = "Event created.";
@@ -76,9 +84,9 @@ namespace RaceDay.Mvc.Controllers
             var ev = await response.Content.ReadFromJsonAsync<EventFormViewModel>();
             return View("Form", ev);
         }
-
+        //here
         [HttpPost]
-        public async Task<IActionResult> Edit(EventFormViewModel model)
+        public async Task<IActionResult> Edit(EventFormViewModel model, IFormFile? bannerFile)
         {
             if (!ModelState.IsValid)
             {
@@ -92,8 +100,7 @@ namespace RaceDay.Mvc.Controllers
                 model.EventDate,
                 model.Location,
                 model.Distance,
-                model.EventType,
-                model.BannerImageUrl
+                model.EventType
             };
 
             var response = await _api_client.SendAsync(HttpMethod.Put, $"api/events/{model.EventId}", body);
@@ -107,6 +114,11 @@ namespace RaceDay.Mvc.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Could not update the event.");
                 return View("Form", model);
+            }
+
+            if (bannerFile != null && bannerFile.Length > 0)
+            {
+                await _api_client.SendFileAsync(HttpMethod.Post, $"api/events/{model.EventId}/banner", bannerFile);
             }
 
             TempData["SuccessMessage"] = "Event updated.";

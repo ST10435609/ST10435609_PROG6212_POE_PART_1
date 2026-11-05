@@ -56,6 +56,30 @@ namespace RaceDay.Mvc.Services
             return response;
         }
 
+
+        public async Task<HttpResponseMessage> SendFileAsync(HttpMethod method, string path, IFormFile file)
+        {
+            var client = _http_client_factory.CreateClient("RaceDayApi");
+            var request = new HttpRequestMessage(method, path);
+
+            var session = _http_context_accessor.HttpContext!.Session;
+            var saved_cookie = session.GetString(SessionCookieKey);
+            if (!string.IsNullOrEmpty(saved_cookie))
+            {
+                request.Headers.Add("Cookie", saved_cookie);
+            }
+
+            var form_content = new MultipartFormDataContent();
+            var stream_content = new StreamContent(file.OpenReadStream());
+            stream_content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+            // "file" must match the IFormFile parameter name on the API's action method
+            form_content.Add(stream_content, "file", file.FileName);
+            request.Content = form_content;
+
+            return await client.SendAsync(request);
+        }
+
         public void ClearApiSessionCookie()
         {
             _http_context_accessor.HttpContext!.Session.Remove(SessionCookieKey);
