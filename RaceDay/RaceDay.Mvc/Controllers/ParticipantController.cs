@@ -63,14 +63,14 @@ namespace RaceDay.Mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Profile(ProfileViewModel model)
+        public async Task<IActionResult> Profile(ProfileViewModel model, IFormFile? pictureFile)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var body = new { model.FullName, model.Email, model.ProfilePictureUrl };
+            var body = new { model.FullName, model.Email };
             var response = await _api_client.SendAsync(HttpMethod.Put, "api/users/me", body);
 
             if (response.StatusCode == HttpStatusCode.Conflict)
@@ -85,11 +85,15 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
-            // keep the MVC session's display name in sync with the update
+            if (pictureFile != null && pictureFile.Length > 0)
+            {
+                await _api_client.SendFileAsync(HttpMethod.Post, "api/users/me/profile-picture", pictureFile);
+            }
+
             HttpContext.Session.SetString(RaceDay.Mvc.Security.MvcSessionKeys.FullName, model.FullName);
 
             TempData["SuccessMessage"] = "Profile updated.";
-            return View(model);
+            return RedirectToAction(nameof(Profile));
         }
     }
 }

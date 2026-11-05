@@ -2,7 +2,7 @@
 
 <h2>@(Model.EventId == 0 ? "Create Event" : "Edit Event")</h2>
 
-<form asp-action="@(Model.EventId == 0 ? "Create" : "Edit")" method="post">
+<form asp-action="@(Model.EventId == 0 ? "Create" : "Edit")" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="EventId" />
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -36,8 +36,15 @@
         </select>
     </div>
     <div class="mb-3">
-        <label asp-for="BannerImageUrl" class="form-label">Banner Image URL (temporary — file upload comes later)</label>
-        <input asp-for="BannerImageUrl" class="form-control" />
+        <label class="form-label">Event Banner Image</label>
+        <input type="file" name="bannerFile" class="form-control" accept="image/jpeg,image/png,image/webp" />
+        @if (!string.IsNullOrEmpty(Model.BannerImageUrl))
+        {
+            <div class="mt-2">
+                <p class="text-muted">Current banner:</p>
+                <img src="@Model.BannerImageUrl" alt="Current event banner" style="max-width: 300px;" />
+            </div>
+        }
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
