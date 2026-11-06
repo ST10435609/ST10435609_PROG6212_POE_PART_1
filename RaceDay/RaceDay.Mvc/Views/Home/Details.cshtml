@@ -5,6 +5,10 @@
 }
 
 <h2>@Model.Name</h2>
+@if (!string.IsNullOrEmpty(Model.BannerImageUrl))
+{
+    <img src="@Model.BannerImageUrl" alt="@Model.Name banner" class="img-fluid mb-3" />
+}
 <p>@Model.EventDate.ToString("dd MMM yyyy") — @Model.Location</p>
 <p>@Model.EventType, @Model.Distance km</p>
 <p>@Model.Description</p>
