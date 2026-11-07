@@ -23,7 +23,10 @@ builder.Services.AddHttpClient("RaceDayApi", client =>
 })
 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
 {
-    UseCookies = false
+    UseCookies = false,
+
+    // Accept the API's self-signed local dev certificate.
+    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
 builder.Services.AddScoped<RaceDay.Mvc.Services.ApiClient>();
