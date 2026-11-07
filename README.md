@@ -83,3 +83,47 @@ SQL Server Crash course | Microsoft SQL Server Tutorial 2021. TutorialBrain [vid
 
 https://youtu.be/JLM6mptLvQI 
 
+# Part 3 — MVC Web Application
+
+## Setup and run instructions (without Docker)
+1. Ensure the Part 2 API is running first (see Part 2 instructions above) — the MVC app has no database access of its own and depends entirely on the API.
+2. Open `RaceDay/RaceDay.slnx` in Visual Studio.
+3. Set both `RaceDay.Api` and `RaceDay.Mvc` as startup projects (Solution → Configure Startup Projects → Multiple startup projects).
+4. Run. Both the API's Swagger page and the MVC app open automatically.
+
+## Azure Blob Storage configuration
+The API integrates Azure Blob Storage for event banner images and profile pictures. The connection string is stored locally using .NET User Secrets, not committed to the repository:
+    dotnet user-secrets init --project RaceDay/RaceDay.Api
+    dotnet user-secrets set "AzureBlobStorage:ConnectionString" "<your connection string>" --project RaceDay/RaceDay.Api
+The MVC application never communicates with Azure directly — all file uploads go through the API.
+
+## Running with Docker
+1. Start the API normally (listening on `http://localhost:5041`).
+2. From the `RaceDay` folder, build the image:
+       docker build -t raceday-mvc -f Dockerfile .
+3. Run the container:
+       docker run -p 8081:8080 -e ApiSettings__BaseUrl=http://host.docker.internal:5041/ raceday-mvc
+4. Open http://localhost:8081
+
+## Roles
+- **Organiser** — dashboard with event/enrolment summaries, create/edit/delete events with banner image upload, manage categories, view enrolments per event, capture results.
+- **Participant** — browse and filter upcoming events, view event details, enrol in a category, view personal enrolments and results, update profile with picture upload.
+
+## Known deviations from the Part 1/2 plan
+- `GET /api/events` and `GET /api/events/{id}` are fully public (no session required), rather than "Any (logged in)" as originally planned.
+- `PUT /api/users/me` can return `409 Conflict` if the new email is already taken — not in the original plan.
+- `DELETE /api/events/{id}` and `DELETE /api/categories/{id}` can return `409 Conflict` if dependent categories/enrolments still exist.
+- Two new endpoints not in the original plan: `POST /api/events/{id}/banner` and `POST /api/users/me/profile-picture`, added once Azure Blob Storage was integrated.
+- EF Core-generated schema differs from the Part 1 SQL script in three expected ways: the `__EFMigrationsHistory` table, auto-generated foreign key constraint names, and `datetime2` instead of `datetime` for `CreatedAt`/`EnrolmentDate`.
+
+## CI/CD
+<img width="1906" height="1078" alt="part 3 cl 1" src="https://github.com/user-attachments/assets/d838def0-03fe-423a-a1f0-78aa39b633b7" />
+
+
+## Video
+https://youtu.be/ORop6PdzPUo
+
+## AI Tool Disclosure
+AI was used collaboratively for planning and design discussion and code structure:
+how to use Azure Blob Storage integration, the Dockerfile, and the updated CI workflow.
+and debugging of real issues encountered (e.g. certificate trust inside Docker, Kestrel binding, NuGet restore caching) was done interactively with AI assistance.
