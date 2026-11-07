@@ -1,0 +1,44 @@
+﻿@model RaceDay.Mvc.Models.OrganiserDashboardViewModel
+
+<h2>Organiser Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Total Events</h5>
+                <p class="display-6">@Model.TotalEvents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Total Enrolments</h5>
+                <p class="display-6">@Model.TotalEnrolments</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a asp-controller="Events" asp-action="Create" class="btn btn-primary mb-3">Create New Event</a>
+
+<table class="table">
+    <thead>
+        <tr><th>Name</th><th>Date</th><th>Location</th><th>Enrolments</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var ev in Model.Events)
+        {
+            <tr>
+                <td>@ev.Name</td>
+                <td>@ev.EventDate.ToString("dd MMM yyyy")</td>
+                <td>@ev.Location</td>
+                <td>@ev.EnrolmentCount</td>
+                <td>
+                    <a asp-controller="Events" asp-action="Edit" asp-route-id="@ev.EventId" class="btn btn-sm btn-outline-secondary">Manage</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

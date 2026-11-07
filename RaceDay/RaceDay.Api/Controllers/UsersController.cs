@@ -11,10 +11,48 @@ namespace RaceDay.Api.Controllers
     public class UsersController : ApiControllerBase
     {
         private readonly RaceDayDbContext _db;
+        private readonly RaceDay.Api.Services.BlobStorageService _blob_storage_service;
 
-        public UsersController(RaceDayDbContext db)
+        public UsersController(
+            RaceDayDbContext db,
+            RaceDay.Api.Services.BlobStorageService blob_storage_service)
         {
             _db = db;
+            _blob_storage_service = blob_storage_service;
+        }
+
+        // POST /api/users/me/profile-picture — any logged-in user
+        [HttpPost("me/profile-picture")]
+        [SessionAuthorize]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
+        {
+            var user = await _db.Users.FindAsync(CurrentUserId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            if (file.Length > 5 * 1024 * 1024)
+            {
+                return BadRequest("File too large. Maximum size is 5MB.");
+            }
+
+            var allowed_types = new[] { "image/jpeg", "image/png", "image/webp" };
+            if (!allowed_types.Contains(file.ContentType))
+            {
+                return BadRequest("Only JPEG, PNG or WEBP images are allowed.");
+            }
+
+            var url = await _blob_storage_service.UploadAsync("profile-pictures", file);
+            user.ProfilePictureUrl = url;
+            await _db.SaveChangesAsync();
+
+            return Ok(new { profilePictureUrl = url });
         }
 
         [HttpGet("me")]

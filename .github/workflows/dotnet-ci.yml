@@ -1,4 +1,4 @@
-name: RaceDay API CI
+npm runname: RaceDay API CI
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       - name: Set up .NET 10 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: "10.0.x"
 
       - name: Restore dependencies
         run: dotnet restore RaceDay/RaceDay.slnx

@@ -1,0 +1,18 @@
+﻿@model List<RaceDay.Mvc.Models.ParticipantResultViewModel>
+
+<h2>My Results</h2>
+
+<table class="table">
+    <thead><tr><th>Event</th><th>Category</th><th>Finish Time</th><th>Position</th></tr></thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.EventName</td>
+                <td>@r.CategoryName</td>
+                <td>@r.FinishTime.ToString("HH:mm:ss")</td>
+                <td>@r.FinishingPosition</td>
+            </tr>
+        }
+    </tbody>
+</table>

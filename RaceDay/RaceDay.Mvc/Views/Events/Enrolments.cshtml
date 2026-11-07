@@ -1,0 +1,27 @@
+﻿@model List<RaceDay.Mvc.Models.EnrolmentListItemViewModel>
+
+<h2>Enrolments</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table">
+    <thead><tr><th>Participant ID</th><th>Category</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td>@e.ParticipantId</td>
+                <td>@e.CategoryName</td>
+                <td>
+                    <span class="badge @(e.EnrolmentStatus == "Confirmed" ? "bg-success" : "bg-warning")">@e.EnrolmentStatus</span>
+                </td>
+                <td>
+                    <a asp-action="CaptureResult" asp-route-enrolmentId="@e.EnrolmentId" asp-route-eventId="@ViewBag.EventId" class="btn btn-sm btn-outline-primary">Capture Result</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
