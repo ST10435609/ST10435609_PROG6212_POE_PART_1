@@ -1,14 +1,14 @@
-npm runname: RaceDay API CI
+name: RaceDay CI
 
 on:
   push:
-    branches: ["part2-api", "main"]
+    branches: ["part2-api", "part3-mvc", "main"]
   pull_request:
-    branches: ["part2-api", "main"]
+    branches: ["part2-api", "part3-mvc", "main"]
 
 jobs:
   build-and-test:
-    name: Build and run unit tests
+    name: Build solution and run unit tests
     runs-on: ubuntu-latest
 
     steps:
@@ -18,13 +18,25 @@ jobs:
       - name: Set up .NET 10 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          dotnet-version: '10.0.x'
 
       - name: Restore dependencies
         run: dotnet restore RaceDay/RaceDay.slnx
 
-      - name: Build
+      - name: Build (API, Tests, MVC)
         run: dotnet build RaceDay/RaceDay.slnx --no-restore --configuration Release
 
       - name: Run unit tests
         run: dotnet test RaceDay/RaceDay.slnx --no-build --configuration Release --verbosity normal
+
+  docker-build:
+    name: Build MVC Docker image
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t raceday-mvc -f RaceDay/Dockerfile RaceDay
